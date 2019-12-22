@@ -1,0 +1,110 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Blauwmaan | API Caller{% endblock %}
+   {% block stylesheets %}
+       <style>
+
+           body {
+               overflow: hidden;
+               background-image: linear-gradient(to right, rgba(11,17,37, 0), rgba(11,17,37, 0.50),
+               rgba(11,17,37, 0.680), rgba(11,17,37, 0.70), rgba(11,17,37, 0.94),  rgba(11,17,37, 0.98));
+               -webkit-perspective: 100px; /* Safari 4-8  */
+               perspective: 100px;
+           }
+
+           .required {
+               font-size: 30px;
+               font-family: 'Pacifico', cursive;
+               text-shadow: 0 0 2px #222222;
+           }
+
+           .glass {
+               background: #5eb5e0;
+               box-shadow: 0 0 4px 4px inset black;
+           }
+
+           .cover {
+               background: #222222;
+           }
+
+           .computerPicture {
+               clip-path: circle(50%);
+           }
+
+           .comp {
+               -webkit-transform-style: preserve-3d; /* Safari 3-8  */
+               -webkit-transform: rotateX(2deg); /* Safari 3-8  */
+               transform-style: preserve-3d;
+               transform: rotateX(2deg);
+           }
+
+           .boxshadow {
+
+           }
+
+       </style>
+       <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+   {% endblock %}
+{% block body %}
+
+<div id="container">
+    {% if name is not null %}
+    <div class="row ml-5 mt-5">
+            <div class="cover col-7 p-5 comp">
+                <div id="glass" class="glass row m-2">
+                    <section class="text-center mx-auto col-6">
+
+                        <a href="{{ path("apicallerOne") }}">
+                            <h4 class="m-5">Hello {{ name }}, I have a mission for you</h4>
+                        </a>
+
+                        <img class="img-fluid computerPicture rounded mx-auto d-block" src="{{ api['photo'] }}" alt="picture of {{ api['photo'] }}">
+                        <a href="index1.html.twig">
+                            <ul id="blink" class="bg-dark text-light text-center p-5 card list-unstyled m-5">
+                            <li >{{ api['name'] }} {{ api['surname'] }}</li>
+                            <li> {{ api['gender'] }}</li>
+                            <li> {{ api['age'] }}</li>
+                            <li> {{ api['region'] }}</li>
+                            </ul>
+                        </a>
+                    </section>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+            <div class="col-3 bg-dark p-5 boxshadow text-center mx-auto">
+                {% if name is null %}
+                    {{ form_start(username) }}
+                    {{ form_row(username.Username, {'attr': {'class': 'bg-light', 'placeholder': 'Enter your name here'}})}}
+                    {{ form_row(username.Submit, {'attr': {'class': 'btn '}})}}
+                    {{ form_end(username) }}
+                {% endif %}
+            </div>
+        </div>
+    <script>
+        let missionAccept = document.getElementById("blink");
+        let glass = document.getElementById("glass");
+        function playAnimation () {
+            missionAccept.animate([
+                { opacity: '.9' },
+                { opacity: '1' },
+                { opacity: '.9' }
+            ], {
+                duration: 2000,
+                iterations: Infinity
+            });
+
+            glass.animate([
+                { opacity: '.9' },
+                { opacity: '1' },
+                { opacity: '.9' }
+            ], {
+                duration: 2000,
+                iterations: Infinity
+            });
+        }
+        playAnimation();
+
+
+    </script>
+{% endblock %}
