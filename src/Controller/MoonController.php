@@ -5,15 +5,16 @@ namespace App\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 
-class BoxGameController extends AbstractController
+class MoonController extends AbstractController
 {
     /**
-     * @Route("/boxgame", name="box_game")
+     * @Route("/moon", name="moon")
      */
     public function index()
     {
-        return $this->render('box_game/index.html.twig', [
-            'controller_name' => 'BoxGameController',
+
+        return $this->render('moon/index.html.twig', [
+
         ]);
     }
 }

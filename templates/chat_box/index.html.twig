@@ -1,0 +1,25 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}ChatBox{% endblock %}
+    {% block stylesheets %}
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+        <style>
+            body {
+                background: #222222;
+                overflow: hidden;
+            }
+        </style>
+    {% endblock %}
+{% block body %}
+
+<div class="container background p-4">
+    <div id='target' class=" row bg-light m-4 p-4">
+        <a href="{{ path('homepage') }}">
+            <h1>Under Development :)</h1>
+        </a>
+    </div>
+</div>
+    <script>
+
+    </script>
+{% endblock %}

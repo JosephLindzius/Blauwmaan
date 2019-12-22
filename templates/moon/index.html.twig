@@ -3,8 +3,28 @@
 {% block title %}Moon{% endblock %}
 
 {% block body %}
+    <style>
+        .moon {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            top: 500px
+        }
 
-    <div ontouchstart=""></div>
+        .moonTitle {
+            position: absolute;
+            font-size: 40px;
+            font-family: 'Pacifico', cursive;
+        }
+
+
+    </style>
+    <div class="moon" ontouchstart="">
+        <a href="{{ path("homepage")}}" class='moonTitle '>
+            <h1 class="">Moon</h1>
+        </a>
+
+    </div>
     <script src="../assets/js/three.js"></script>
     <script src="../assets/js/app.js"></script>
 
