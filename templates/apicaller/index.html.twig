@@ -36,6 +36,20 @@
                -webkit-transform: rotateX(2deg); /* Safari 3-8  */
                transform-style: preserve-3d;
                transform: rotateX(2deg);
+               transform: translateY(50px);
+               animation: Mover 5000ms forwards;
+               animation-delay: 500ms;
+               animation-duration: 5000ms;
+               animation-timing-function: ease;
+
+           }
+
+           @keyframes Mover {
+               0%{transform: translateZ(-2px)}
+               100% {
+                   transform: translateZ(-75px);
+
+               }
            }
 
            .boxshadow {
@@ -49,9 +63,9 @@
 
 <div id="container">
     {% if name is not null %}
-    <div class="row ml-5 mt-5">
-            <div class="cover col-7 p-5 comp">
-                <div id="glass" class="glass row m-2">
+    <div class="row">
+            <div class="cover col-12 p-5 comp">
+                <div id="glass" class="glass row m-2 p-4">
                     <section class="text-center mx-auto col-6">
 
                         <a href="{{ path("homepage") }}">
@@ -70,15 +84,15 @@
                 </div>
             </div>
         </div>
-        {% endif %}
-            <div class="col-3 bg-dark p-5 boxshadow text-center mx-auto">
+            {% endif %}
                 {% if name is null %}
-                    {{ form_start(username) }}
-                    {{ form_row(username.Username, {'attr': {'class': 'bg-light', 'placeholder': 'Enter your name here'}})}}
-                    {{ form_row(username.Submit, {'attr': {'class': 'btn '}})}}
-                    {{ form_end(username) }}
-                {% endif %}
-            </div>
+                    <div class="col-3 bg-dark p-5 boxshadow text-center mx-auto">
+                        {{ form_start(username) }}
+                        {{ form_row(username.Username, {'attr': {'class': 'bg-light', 'placeholder': 'Enter your name here'}})}}
+                        {{ form_row(username.Submit, {'attr': {'class': 'btn '}})}}
+                        {{ form_end(username) }}
+                    </div>
+            {% endif %}
         </div>
     <script>
         let missionAccept = document.getElementById("blink");
