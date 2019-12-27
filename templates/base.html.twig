@@ -16,6 +16,10 @@
 
                 }
 
+                .znav {
+                    z-index: 1000000;
+                }
+
 
             </style>
             <link href="https://fonts.googleapis.com/css?family=Pacifico&display=swap" rel="stylesheet">
@@ -29,7 +33,7 @@
         {% endblock %}
     </head>
     <body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <nav class="znav navbar navbar-expand-lg navbar-light bg-light">
         <a class="navbar-brand  " href="{{ path('homepage') }}">Blauwmaan</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>

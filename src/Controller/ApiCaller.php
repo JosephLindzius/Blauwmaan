@@ -44,19 +44,19 @@ class ApiCaller extends AbstractController
         $client = new CurlHttpClient();
         try {
             $response = $client->request('GET', 'https://uinames.com/api/?ext');
+
+            $statusCode = $response->getStatusCode();
+// $statusCode = 200
+            $contentType = $response->getHeaders()['content-type'][0];
+// $contentType = 'application/json'
+            $content = $response->getContent();
+// $content = '{"id":521583, "name":"symfony-docs", ...}'
+            $content = $response->toArray();
+// $content = ['id' => 521583, 'name' => 'symfony-docs', ...]
         } catch (TransportExceptionInterface $e) {
             $this->addFlash('error', 'did not work');
         }
 
-
-        $statusCode = $response->getStatusCode();
-// $statusCode = 200
-        $contentType = $response->getHeaders()['content-type'][0];
-// $contentType = 'application/json'
-        $content = $response->getContent();
-// $content = '{"id":521583, "name":"symfony-docs", ...}'
-        $content = $response->toArray();
-// $content = ['id' => 521583, 'name' => 'symfony-docs', ...]
         return $content;
     }
 

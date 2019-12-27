@@ -46,10 +46,14 @@
     }
     .abso {
         position: absolute;
-        top: 250px;
-        z-index: 100000000;
+        top: -100px;
+        z-index: 1;
+
     }
 
+    .imageLogo {
+        max-width: 100%;
+    }
 
 
 
@@ -135,12 +139,18 @@
 
         init();
 
+        window.addEventListener( 'resize', function() {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+
+            renderer.setSize( window.innerWidth, window.innerHeight );
+        });
     </script>
 
-    <div class="abso">
-        <main class="d-flex row">
-            <div class="col-6"></div>
-            <img class="col-6 img-responsive" src="../assets/images/Blauwmaan-Transparant.png" alt="">
+    <div class="abso d-flex">
+        <main class="row justify-content-center align-self-center">
+            <div class=""></div>
+            <img class="col-12 img-responsive imageLogo" src="../assets/images/Blauwmaan-Transparant.png" alt="">
             <div class=""></div>
         </main>
     </div>

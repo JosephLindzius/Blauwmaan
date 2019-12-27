@@ -12,6 +12,7 @@ class LogoController extends AbstractController
      */
     public function index()
     {
+
         return $this->render('logo/index.html.twig', [
             'controller_name' => 'LogoController',
         ]);
