@@ -33,6 +33,13 @@
         {% endblock %}
     </head>
     <body>
+    {% for label, messages in app.flashes(['success', 'error']) %}
+        {% for message in messages %}
+            <div class="alert alert-{{ label }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endfor %}
     <nav class="znav navbar navbar-expand-lg navbar-light bg-light">
         <a class="navbar-brand  " href="{{ path('homepage') }}">Blauwmaan</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -42,7 +49,7 @@
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                       Example Pages
+                       Level One Pages
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                         <a class="dropdown-item" href="{{ path('apicaller') }}">API Caller</a>
@@ -52,6 +59,15 @@
                         <a class="dropdown-item" href="{{ path('chat_box') }}">ChatBox</a>
                         <div class="dropdown-divider"></div>
                         <a class="dropdown-item" href="{{ path('logo') }}">Logo</a>
+                    </div>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Level Two Pages
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" href="{{ path('r_p_g') }}">RPG</a>
+                        <div class="dropdown-divider"></div>
                     </div>
                 </li>
             </ul>

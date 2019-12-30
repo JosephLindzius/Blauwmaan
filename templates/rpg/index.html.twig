@@ -1,0 +1,210 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}RPG{% endblock %}
+
+ {% block stylesheets %}
+     <style>
+
+         .background {
+             background-color: darkgreen;
+         }
+
+         .className {
+             background-color: #222222;
+             color: #AAAAAA;
+         }
+
+         .className {
+             background-color: #222222;
+             color: #AAAAAA;
+         }
+
+         canvas {
+             height: 100%;
+             width: 100%;
+             background-color: #B0413E;
+         }
+
+         @-webkit-keyframes shaker {
+             from {top: 0px;}
+             to {top: 2px;}
+         }
+
+         @keyframes shaker {
+             from {top: 0px;}
+             to {top: 2px;}
+         }
+
+     </style>
+     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+ {% endblock %}
+
+{% block body %}
+    <main class="container d-flex flex-column">
+    <div class="background p-2">
+        <section class="row">
+            <div class="col-3 mb-5 text-center">
+                {% for ally in allies %}
+                    <div class="border card pt-2 px-1 m-2 allies" id="ally{{ loop.index }}" data-character-name="{{ ally.name }}" data-character-hp="{{ ally.stats.hp }}" data-character-mp="{{ ally.stats.mp }}">
+                        <h3 id="allyName{{ loop.index }}" class="bg-light p-2">{{ ally.name }}</h3>
+                        <h4 id="allyClassName{{ loop.index }}" class="border className p-1">{{ ally.class.name }}</h4>
+                        <h6 id="allyHP{{ loop.index }}" class="bg-light p-1">HP: {{ ally.stats.hp }}</h6>
+                        <h6 id="allyMP{{ loop.index }}" class="bg-light p-1">MP: {{ ally.stats.mp }}</h6>
+                        {% set allyNum = loop.index %}
+                        <div class="d-flex d-flex justify-content-around">
+                            {% for move in ally.class.moves[0] %}
+                              <div class="btn btn-primary col-4 p-1 mb-2 allyMove" id="Amove-{{ allyNum }}-{{ loop.index }}">{{ move }}</div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+            <div class="col-6 my-1 mb-5">
+                <canvas id="canvas"></canvas>
+            </div>
+            <div class="col-3 mb-5 text-center">
+                {% for enemy in enemies %}
+                <div class="border card bg-danger pt-2 px-1 m-2 enemies" id="enemy{{ loop.index }}" data-character-name="{{ enemy.name }}" data-character-hp="{{ enemy.stats.hp }}" data-character-mp="{{ enemy.stats.mp }}">
+                    <h3 id="enemyName{{ loop.index }}" class="bg-dark text-white p-2">{{ enemy.name }}</h3>
+                    <h4 id="enemyClassName{{ loop.index }}" class="border classNameE p-1">{{ enemy.class.name }}</h4>
+                    <h6 id="enemyName{{ loop.index }}" class="bg-light p-1">HP: {{ enemy.stats.hp }}</h6>
+                    <h6 id="enemyName{{ loop.index }}" class="bg-light p-1">MP: {{ enemy.stats.mp }}</h6>
+                    {% set enemyNum = loop.index %}
+       <!--             <div class="d-flex justify-content-around">
+                        {% for move in enemy.class.moves[0] %}
+                            <div class="btn btn-primary disabled col-4 p-1 mb-2" id="Emove-{{ enemyNum }}-{{ loop.index }}">{{ move }}</div>
+                        {% endfor %}
+                    </div>  -->
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+    </div>
+</main>
+    <script>
+
+        let allies = {{ allies|json_encode|raw }};
+        let enemies = {{ enemies|json_encode|raw }};
+        let allyMoveButtons = document.querySelectorAll('.allyMove');
+        let moveChecker = [false, false, false];
+        allyMoveButtons.forEach(function(move){
+            let id = move.getAttribute("id");
+            move.addEventListener('click', function(e){
+                let button;
+                button = document.getElementById(id);
+                switch (id) {
+                    case "Amove-1-1":
+                        button.style.opacity = "1.0";
+                        button = document.getElementById('Amove-1-2');
+                        button.style.opacity = "0.4";
+                        selectEnemy("Amove-1-1", 0);
+                        break;
+                    case "Amove-1-2":
+                        button.style.opacity = "1.0";
+                        button = document.getElementById('Amove-1-1');
+                        button.style.opacity = "0.4";
+                        moveChecker[0] = true;
+                        selectEnemy("Amove-1-2", 0);
+                        break;
+                    case "Amove-2-1":
+                        button.style.opacity = "1.0";
+                        button = document.getElementById('Amove-2-2');
+                        button.style.opacity = "0.4";
+                        moveChecker[1] = true;
+                        selectEnemy("Amove-2-1", 1);
+                        break;
+                    case "Amove-2-2":
+                        button.style.opacity = "1.0";
+                        button = document.getElementById('Amove-2-1');
+                        button.style.opacity = "0.4";
+                        moveChecker[1] = true;
+                        selectEnemy("Amove-2-2", 1);
+                        break;
+                    case "Amove-3-1":
+                        button.style.opacity = "1.0";
+                        button = document.getElementById('Amove-3-2');
+                        button.style.opacity = "0.4";
+                        selectEnemy("Amove-3-1", 2);
+                        break;
+                    case "Amove-3-2":
+                        button.style.opacity = "1.0";
+                        button = document.getElementById('Amove-3-1');
+                        button.style.opacity = "0.4";
+                        selectEnemy("Amove-3-2", 2);
+                        break;
+                    default:
+                        break;
+
+                }
+            });
+
+            function selectEnemy (location, checkerIndex) {
+                let enemies = document.querySelectorAll(".enemies");
+                let selector = document.createElement("select");
+                let button = document.getElementById(location);
+                selector.addEventListener('change', function(){
+                    selector.remove();
+                    moveChecker[checkerIndex] = true;
+                    checkMoves(moveChecker);
+                });
+                enemies.forEach(function (element) {
+                    let enemy = element.getAttribute("data-character-name");
+                    let option = document.createElement("option");
+                    option.innerText = enemy;
+                    selector.append(option);
+                    console.log(enemy);
+
+                    /* element.addEventListener('click', function (e) {
+                        console.log(e.target);
+                    }); */
+                    setInterval(function(){
+                        element.style.animation = 'shaker 400ms';
+                    }, 1000);
+
+
+                 element.style.animation = '';
+                });
+                if(selector) {
+                    selector.remove();
+                }
+                button.append(selector);
+
+            }
+
+            function arrayChecker (arr1, arr2) {
+                if(arr1.length !== arr2.length)
+                    return false;
+                for(let i = arr1.length; i--;) {
+                    if(arr1[i] !== arr2[i])
+                        return false;
+                }
+                return true;
+            }
+            function checkMoves () {
+                const checkArray = [true, true, true];
+                if (arrayChecker(moveChecker, checkArray)) {
+                    if (confirm("ready to battle?")) {
+                        battle();
+                    }
+
+                }
+
+            }
+            function resetMoves () {
+                moveChecker = [false, false, false];
+                allyMoveButtons.forEach(function(element){
+                    element.style.opacity = "1.0";
+                });
+
+            }
+
+            function battle () {
+                    resetMoves();
+            }
+        })
+
+
+    </script>
+    <template id="enemySelect">
+    </template>
+{% endblock %}
