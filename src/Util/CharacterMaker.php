@@ -20,6 +20,7 @@ class CharacterMaker
             unset($names[$rand]);
             $character['stats'] = $this->statMaker();
             $character['class'] = $this->classMaker();
+            $character['dead'] = false;
             $group[] = $character;
         }
         return $group;
