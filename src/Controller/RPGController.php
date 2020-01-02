@@ -20,7 +20,6 @@ class RPGController extends AbstractController
         $allies = $partyMaker->partyCreator(3);
         $enemies = $partyMaker->partyCreator(3);
 
-
         return $this->render('rpg/index.html.twig', [
             'allies' => $allies,
             'enemies' => $enemies,

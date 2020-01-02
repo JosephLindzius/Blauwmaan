@@ -40,6 +40,8 @@ class CharacterMaker
     {
 
         $class = ["Fighter", "Mage", "Assassin", "Healer", "Ranger"];
+        $colors = ["Red", 'Purple', "Yellow", "White", "Green"];
+
 
         $figherMoves = ['Punch', 'Kick'];
         $mageMoves = ['Blast', 'Shield'];
@@ -55,21 +57,27 @@ class CharacterMaker
         switch ($rand):
             case 0:
                 $moves[] = $figherMoves;
+                $color = $colors[0];
                 break;
             case 1:
                 $moves[] = $mageMoves;
+                $color = $colors[1];
                 break;
             case 2:
                 $moves[] = $assassinMoves;
+                $color = $colors[2];
                 break;
             case 3:
                 $moves[] = $healerMoves;
+                $color = $colors[3];
                 break;
             case 4:
                 $moves[] = $rangerMoves;
+                $color = $colors[4];
                 break;
             default:
                 $move[] = 'special';
+                $color = 'default';
                 break;
         endswitch;
 
@@ -77,6 +85,7 @@ class CharacterMaker
         $class = [
             'name' => $name,
             'moves' => $moves,
+            'color' => $color,
         ];
 
         return $class;

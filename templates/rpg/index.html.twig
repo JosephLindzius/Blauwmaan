@@ -4,25 +4,70 @@
 
  {% block stylesheets %}
      <style>
-
+         .bodyWrapper {
+             display: flex;
+             width: 100%;
+             height: 100vh;
+             background-color: #62ff3a;
+         }
+         body {
+             perspective: 200px;
+         }
          .background {
-             background-color: darkgreen;
+             position: relative;
+             transform-style: preserve-3d;
+             background-image: url("{{ asset("../assets/images/Bol_Texture_Wood.png") }}");
+             background-size: cover;
+             width: 100%;
+             height: 100%;
+             transform: rotateX(10deg) translateZ(-75px) translateY(-150px) rotateZ(0deg) scale3d(0.9, 0.9, 0.9);
+             box-shadow: 0 0 4px 40px black, 0 0 10px 50px white, 0 0 4px 4px inset, 0px 0px 137px 17px inset beige;
+         }
+
+
+         .allyMove {
+             background-image: linear-gradient(white 0%, olivedrab 90%, coral 100%);
+         }
+
+         .allyMove:active {
+             background-image: linear-gradient(white 0%, black 30%, coral 100%);
+         }
+
+
+         .specialBox {
+             perspective: 1000px;
+             position: relative;
          }
 
          .className {
              background-color: #222222;
              color: #AAAAAA;
+
+             transform-style: preserve-3d;
          }
 
-         .className {
-             background-color: #222222;
-             color: #AAAAAA;
+         .allyMove:hover {
+             transform: translateZ(40px);
+             color: deepskyblue;
          }
+
+         .moveSelect {
+
+         }
+
+         .enemies {
+
+             transform: rotateZ(-90deg);
+         }
+
 
          canvas {
              height: 100%;
              width: 100%;
-             background-color: #B0413E;
+             background-image: url("{{ asset('assets/images/checkerBoard.jpg') }}");
+             background-size: cover;
+             box-shadow: 0 0 10px 10px inset rgba(0, 0, 0, 0.64), 0 0 4px 4px rgba(69, 18, 17, 0.78);
+
          }
 
          @-webkit-keyframes shaker {
@@ -43,54 +88,164 @@
              background-color: #B0413E;
          }
 
+
+
+         select {
+             padding: 4px;
+         }
+         .scene {
+             width: 200px;
+             height: 200px;
+             perspective: 400px;
+
+         }
+
+         .scene:hover {
+
+         }
+
+         .cube {
+             width: 200px;
+             height: 200px;
+             position: relative;
+             transform-style: preserve-3d;
+             transform: rotateZ(90deg) translateZ(-1000px);
+             transition: transform 1000ms ease-in;
+
+         }
+
+         .cubeEnemies {
+             width: 200px;
+             height: 200px;
+             position: relative;
+             transform-style: preserve-3d;
+             transform: rotateZ(0deg) translateZ(-1000px);
+             transition: transform 1000ms ease-in;
+
+         }
+
+         .cubeEnemies:hover {
+             transition: transform 400ms;
+             transform: translateZ(50px) translateX(20px) rotateZ(90deg) rotateX(3deg) rotateZ(180deg);
+
+         }
+
+
+         .cube:hover {
+             transition: transform 300ms;
+             transform: translateZ(50px) translateX(-20px) rotateZ(90deg) rotateX(3deg) rotateZ(-90deg);
+
+         }
+
+
+         .hover {
+             transition: transform 300ms ease-in-out;
+             transform: translateZ(50px) translateX(-20px) rotateZ(90deg) rotateX(3deg) rotateZ(-90deg);
+
+         }
+
+         .cubeMover {
+             transition: transform 300ms;
+             transform: translateZ(50px) translateX(-20px) rotateZ(90deg) rotateX(3deg) rotateZ(-90deg);
+
+         }
+
+         .classColorRed {
+             background-color: red;
+         }
+
+         .classColorPurple {
+             background-color: purple;
+         }
+
+         .classColorYellow {
+             background-color: yellow;
+         }
+
+         .classColorWhite {
+             background-color: white;
+         }
+
+         .classColorGreen {
+             background-color: green;
+         }
+
+         .classDefault {
+             background-color: black;
+         }
+
+
+
+
      </style>
      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
  {% endblock %}
 
 {% block body %}
-    <main class="container d-flex flex-column">
-    <div class="background p-2">
-        <section class="row">
-            <div class="col-3 mb-5 text-center">
-                {% for ally in allies %}
-                    <div class="border card pt-2 px-1 m-2 allies" id="ally{{ loop.index }}" data-character-name="{{ ally.name }}" data-character-hp="{{ ally.stats.hp }}" data-character-mp="{{ ally.stats.mp }}" data-dead-status="alive">
-                        <h3 id="allyName{{ loop.index-1 }}" class="bg-light p-2">{{ ally.name }}</h3>
-                        <h4 id="allyClassName{{ loop.index-1 }}" class="border className p-1">{{ ally.class.name }}</h4>
-                        <h6 id="allyHP{{ loop.index-1 }}" class="bg-light p-1">HP: {{ ally.stats.hp }}</h6>
-                        <h6 id="allyMP{{ loop.index-1 }}" class="bg-light p-1">MP: {{ ally.stats.mp }}</h6>
-                        {% set allyNum = loop.index %}
-                        <div class="d-flex d-flex justify-content-around">
-                            {% for move in ally.class.moves[0] %}
-                              <div class="btn btn-primary col-4 p-1 mb-2 allyMove" id="Amove-{{ allyNum }}-{{ loop.index }}" data-move="{{ move }}">{{ move }}</div>
-                            {% endfor %}
-                        </div>
-                    </div>
-                {% endfor %}
-            </div>
-            <div class="col-6 my-1 mb-5">
-                <canvas id="canvas"></canvas>
-            </div>
-            <div class="col-3 mb-5 text-center d-flex flex-column justify-content-around">
-                {% for enemy in enemies %}
-                <div class="border card bg-danger pt-2 px-1 m-2 enemies" id="enemy{{ loop.index }}" data-character-name="{{ enemy.name }}" data-character-hp="{{ enemy.stats.hp }}" data-character-mp="{{ enemy.stats.mp }}" data-dead-status="alive">
-                    <h3 id="enemyName{{ loop.index-1 }}" class="bg-dark text-white p-2">{{ enemy.name }}</h3>
-                    <h4 id="enemyClassName{{ loop.index-1 }}" class="border classNameE p-1">{{ enemy.class.name }}</h4>
-                    <h6 id="enemyHP{{ loop.index-1 }}" class="bg-light p-1">HP: {{ enemy.stats.hp }}</h6>
-                    <h6 id="enemyMP{{ loop.index-1 }}" class="bg-light p-1">MP: {{ enemy.stats.mp }}</h6>
-                    {% set enemyNum = loop.index %}
-                   <div class="d-flex justify-content-around">
-                        {% for move in enemy.class.moves[0] %}
-                            <div class="btn btn-primary disabled col-4 p-1 mb-2" style="display: none;" id="Emove-{{ enemyNum }}-{{ loop.index }}" data-move="{{ move }}">{{ move }}</div>
+    <div class="bodyWrapper">
+        <aside class="bg-dark text-white col-2" id="battleText">
+
+        </aside>
+        <main class="container d-flex flex-column col-10">
+            <div class="background p-2">
+                <section class="row p-5">
+                    <div class="col-3 my-auto text-center">
+                        {% for ally in allies %}
+                            <div class="scene">
+                                <div class="cube">
+                                    <div class="border pt-2 px-1 m-2 allies specialBox classColor{{ ally.class.color }}" id="ally{{ loop.index }}" data-character-name="{{ ally.name }}" data-character-hp="{{ ally.stats.hp }}" data-character-mp="{{ ally.stats.mp }}" data-dead-status="alive">
+                                        <h3 id="allyName{{ loop.index-1 }}" class="bg-light p-2 className">{{ ally.name }}</h3>
+                                        <h4 id="allyClassName{{ loop.index-1 }}" class="border className p-1">{{ ally.class.name }}</h4>
+                                        {% set allyNum = loop.index %}
+                                        <div class="d-flex d-flex justify-content-around moveSelect">
+                                            {% for move in ally.class.moves[0] %}
+                                                <div class="col-4 p-1 mb-2 allyMove" id="Amove-{{ allyNum }}-{{ loop.index }}" data-move="{{ move }}">{{ move }}</div>
+                                            {% endfor %}
+                                        </div>
+                                        <h6 id="allyHP{{ loop.index-1 }}" class="bg-light className p-1">HP: {{ ally.stats.hp }}</h6>
+                                        <h6 id="allyMP{{ loop.index-1 }}" class="bg-light className p-1">MP: {{ ally.stats.mp }}</h6>
+
+                                    </div>
+                                </div>
+
+                            </div>
+
                         {% endfor %}
                     </div>
-                </div>
-                {% endfor %}
+                    <div class="col-6 my-1 mb-5">
+                        <canvas id="canvas"></canvas>
+                    </div>
+                    <div class="col-3 mb-5 text-center d-flex flex-column justify-content-around">
+                        {% for enemy in enemies %}
+                            <div class="scene">
+                                <div class="cubeEnemies">
+                                    <div class="border pt-2 px-1 m-2 enemies specialBox classColor{{ enemy.class.color }}" id="enemy{{ loop.index }}" data-character-name="{{ enemy.name }}" data-character-hp="{{ enemy.stats.hp }}" data-character-mp="{{ enemy.stats.mp }}" data-dead-status="alive">
+                                        <h3 id="enemyName{{ loop.index-1 }}" class="bg-dark text-white p-2">{{ enemy.name }}</h3>
+                                        <h4 id="enemyClassName{{ loop.index-1 }}" class="border classNameE p-1">{{ enemy.class.name }}</h4>
+                                        <h6 id="enemyHP{{ loop.index-1 }}" class="bg-light p-1">HP: {{ enemy.stats.hp }}</h6>
+                                        <h6 id="enemyMP{{ loop.index-1 }}" class="bg-light p-1">MP: {{ enemy.stats.mp }}</h6>
+                                        {% set enemyNum = loop.index %}
+                                        <div class="d-flex justify-content-around">
+                                            {% for move in enemy.class.moves[0] %}
+                                                <div class="btn btn-primary disabled col-4 p-1 mb-2" style="display: none;" id="Emove-{{ enemyNum }}-{{ loop.index }}" data-move="{{ move }}">{{ move }}</div>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                        {% endfor %}
+                    </div>
+                </section>
             </div>
-        </section>
+        </main>
     </div>
-</main>
+
     <script>
+
         //globals
+        const battleText = document.getElementById('battleText');
         let canvas = document.getElementById('canvas');
         let currentState = [];
         let gameCounter = 0;
@@ -104,6 +259,7 @@
         let moveChecker = [false, false, false];
         let allyChoice = [];
         let enemyChoice = [];
+
 
         allyMoveButtons.forEach(function(move){
             let id = move.getAttribute("id");
@@ -186,7 +342,9 @@
                         moveChecker[index] = true;
                     }
                 });
-
+                selector.addEventListener('mouseout', function(){
+                    div.remove();
+                });
                 selector.addEventListener('change', function(){
                     let choice = {
                         ally: checkerIndex,
@@ -205,7 +363,7 @@
                 });
 
                 let selectOptionFirst = document.createElement("option");
-                selectOptionFirst.innerText = "Choose your Target";
+                selectOptionFirst.innerText = "Target";
                 selector.append(selectOptionFirst);
                 if (ally === true) {
                     selectorMaker(allies, selector);
@@ -213,7 +371,8 @@
                     selectorMaker(enemies, selector);
                 }
                 div.append(selector);
-                button.append(div);
+                selector.classList.add("form-control");
+                document.querySelector('#allyName'+[checkerIndex]).append(div);
             }
 
             function selectorMaker (group, selector) {
@@ -388,7 +547,7 @@
                         currentDamagePointsAlly[eID] += amount['dmg'];
                     }
 
-                    console.log(enemies[element.enemy]);
+
                 if(eID !== 'null'){
                     calcDamageOnAllies(currentDamagePointsAlly, currentHealPointsEnemy, eID, enemyTemp, allyTemp, element.targetIsEnemy, index, element.move);
                 } else {
@@ -449,9 +608,15 @@
                 if(allies[index].dead === false) {
                     if (targetIsAlly === true) {
                         if (allies[index].name === allies[eID].name) {
+                            let turnInfo1 = document.createElement('div');
                             console.log(allies[index].name+" uses "+move+" on self");
+                            turnInfo1.innerText = allies[index].name+" uses "+move+" on self";
+                            battleText.appendChild(turnInfo1);
                         } else {
+                            let turnInfo2 = document.createElement('div');
                             console.log(allies[index].name+" uses "+move+" on teammate "+allies[eID].name);
+                            turnInfo2.innerText = allies[index].name+" uses "+move+" on teammate "+allies[eID].name;
+                            battleText.appendChild(turnInfo2)
                         }
 
                         let elementAllyHP = document.getElementById("allyHP" + eID);
@@ -471,10 +636,12 @@
                             let eneDiv = document.getElementById('enemy'+eIDPlus.toString());
                             eneDiv.setAttribute('data-dead-status', 'dead');
                             eneDiv.style.visibility = "hidden";
-
                             enemies[eID].dead = true;
                             enemyTemp[eID].dead = true;
                             console.log(enemies[eID].name+" dies");
+                            let turnInfo3 = document.createElement('div');
+                            turnInfo3.innerText = enemies[eID].name+" dies";
+                            battleText.appendChild(turnInfo3);
                             enemyTemp[eID].stats.hp = currentHP;
                         } else {
                             elementEnHP.innerText = 'HP: ' + currentHP;
@@ -495,9 +662,15 @@
             if(enemies[index].dead === false) {
                 if (targetIsEnemy === true) {
                     if (enemies[index].name === enemies[eID].name){
+                        let turnInfo4 = document.createElement('div');
                         console.log(enemies[index].name+" uses "+move+" on self");
+                        turnInfo4.innerText = enemies[index].name+" uses "+move+" on self";
+                        battleText.appendChild(turnInfo4);
                     } else {
+                        let turnInfo5 = document.createElement('div');
                         console.log(enemies[index].name+" uses "+move+" on "+enemies[eID].name);
+                        turnInfo5.innerText = enemies[index].name+" uses "+move+" on teammate "+enemies[eID].name;
+                        battleText.appendChild(turnInfo5)
                     }
                     let elementAllyHP = document.getElementById("enemyHP" + eID);
                     let currentAllyHP = currentState['move'+gameCounter][1][eID].stats.hp;
@@ -513,6 +686,9 @@
                         currentHP = 0;
                         allies[eID].dead = true;
                         console.log(allies[eID].name +" dies");
+                        let turnInfo6 = document.createElement('div');
+                        turnInfo6.innerText = allies[eID].name+" dies";
+                        battleText.appendChild(turnInfo6);
                         let eIDPlus = parseInt(eID) + 1;
                         let eneDiv = document.getElementById('ally'+eIDPlus.toString());
                         eneDiv.setAttribute('data-dead-status', 'dead');

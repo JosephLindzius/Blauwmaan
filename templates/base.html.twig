@@ -8,6 +8,7 @@
 
                 html, body {
                     height: 100%;
+
                 }
 
                 .logo-nav {
@@ -19,6 +20,29 @@
                 .znav {
                     z-index: 1000000;
                 }
+
+                .logRegBackground {
+                    height: calc(100% - 105px);
+                    perspective: 1000px;
+                    padding: 20px;
+                    background-image: linear-gradient(transparent 0%, white 40%, black 90%);
+
+                }
+
+                .loginBox {
+                    transform: rotateX(0) translateZ(0);
+                    animation: logBox 400ms ease-in-out;
+
+                }
+
+                @keyframes logBox {
+                    from {transform: rotateX(40deg) translateZ(50px);}
+                    to {transform: rotateX(0) translateZ(0);}
+                }
+
+
+
+
 
 
             </style>
@@ -70,6 +94,12 @@
                         <div class="dropdown-divider"></div>
                     </div>
                 </li>
+                {% if app.user %}
+                    <li class="nav-item"><div class="disabled nav-link" href="">User: {{ app.user.email}}</div></li>
+                    <li class="nav-item ml-5 loginLink"><a class='nav-link loginLink' href="{{ path('logout') }}">Logout</a></li>
+                {% else %}<li class="nav-item ml-5 loginLink"><a class='nav-link loginLink' href="{{ path('login') }}">Login</a></li>
+                    <li class="nav-item ml-5 loginLink"><a class='nav-link loginLink' href="{{ path('register') }}">Register</a></li>
+                {% endif %}
             </ul>
         </div>
     </nav>
