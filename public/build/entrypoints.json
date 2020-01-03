@@ -1,0 +1,9 @@
+{
+  "entrypoints": {
+    "js/app": {
+      "js": [
+        "http://localhost:8080/build/js/app.js"
+      ]
+    }
+  }
+}

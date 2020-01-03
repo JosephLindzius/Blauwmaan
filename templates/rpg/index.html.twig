@@ -37,13 +37,17 @@
          .specialBox {
              perspective: 1000px;
              position: relative;
-         }
+                      }
 
          .className {
              background-color: #222222;
-             color: #AAAAAA;
+             color: #0f0f0f;
 
              transform-style: preserve-3d;
+         }
+
+         .allyMove {
+             font-weight: bolder;
          }
 
          .allyMove:hover {
@@ -133,7 +137,7 @@
 
          .cube:hover {
              transition: transform 300ms;
-             transform: translateZ(200px) translateX(-20px) rotateZ(90deg) rotateX(3deg) rotateZ(-90deg);
+             transform: translateZ(2px) translateX(-20px) rotateZ(90deg) rotateX(3deg) rotateZ(-90deg);
 
          }
 
@@ -195,7 +199,7 @@
                                 <div class="cube">
                                     <div class="border pt-2 px-1 m-2 allies specialBox classColor{{ ally.class.color }}" id="ally{{ loop.index }}" data-character-name="{{ ally.name }}" data-character-hp="{{ ally.stats.hp }}" data-character-mp="{{ ally.stats.mp }}" data-dead-status="alive">
                                         <h3 id="allyName{{ loop.index-1 }}" class="bg-light p-2 className">{{ ally.name }}</h3>
-                                        <h4 id="allyClassName{{ loop.index-1 }}" class="border className p-1">{{ ally.class.name }}</h4>
+                                        <h4 id="allyClassName{{ loop.index-1 }}" class="border className p-1 text-white">{{ ally.class.name }}</h4>
                                         {% set allyNum = loop.index %}
                                         <div class="d-flex d-flex justify-content-around moveSelect">
                                             {% for move in ally.class.moves[0] %}
@@ -220,7 +224,7 @@
                             <div class="scene">
                                 <div class="cubeEnemies">
                                     <div class="border pt-2 px-1 m-2 enemies specialBox classColor{{ enemy.class.color }}" id="enemy{{ loop.index }}" data-character-name="{{ enemy.name }}" data-character-hp="{{ enemy.stats.hp }}" data-character-mp="{{ enemy.stats.mp }}" data-dead-status="alive">
-                                        <h3 id="enemyName{{ loop.index-1 }}" class="bg-dark text-white p-2">{{ enemy.name }}</h3>
+                                        <h3 id="enemyName{{ loop.index-1 }}" class="bg-dark className text-white p-2">{{ enemy.name }}</h3>
                                         <h4 id="enemyClassName{{ loop.index-1 }}" class="border classNameE p-1">{{ enemy.class.name }}</h4>
                                         <h6 id="enemyHP{{ loop.index-1 }}" class="bg-light p-1">HP: {{ enemy.stats.hp }}</h6>
                                         <h6 id="enemyMP{{ loop.index-1 }}" class="bg-light p-1">MP: {{ enemy.stats.mp }}</h6>
@@ -259,6 +263,7 @@
         let moveChecker = [false, false, false];
         let allyChoice = [];
         let enemyChoice = [];
+        let movesLimit = [];
 
 
         allyMoveButtons.forEach(function(move){
@@ -429,27 +434,49 @@
                 }
             });
 
-            function checkStatus (arrayInput) {
-                arrayInput.forEach(function(element, index){
-                    if (element.getAttribute('data-dead-status') === 'dead'){
-                        allyDeadStatus[index] = true;
+            let choiceArraySuper = {0: {0: 9, 1: 9, 2: 9}, 1: {0: 9, 1: 9, 2: 9}};
+            let counter = 0;
+            for (let i = 0; i < allyDeadStatus.length; i++) {
+                if (allyDeadStatus[i] === true) {
+                        choiceArraySuper[0][i] = counter;
 
-                    }
-                });
+                }
+                if (enemyDeadStatus[i] === true) {
+                    choiceArraySuper[1][i] = counter;
+
+                }
+                counter++;
             }
+            console.log(choiceArraySuper);
+
+
+
 
             for (let i = 0; i < enemies.length; i++) {
+
                 let choice = {
                     enemy: i,
                     move: round[1][i]['class']['moves'][0][Math.round(Math.random())],
-                    target: Math.round(Math.random()*2),
+                    target: Math.floor(Math.random()*3),
                     targetIsEnemy: false,
                 };
                 if (choice.move === 'Heal' || choice.move === "Shield") {
                     choice.targetIsEnemy = true;
+                    while(choice.target === choiceArraySuper[1][i]) {
+                        choice.target = Math.floor(Math.random * enemies.length);
+                    }
+                } else {
+                    while(choice.target === choiceArraySuper[0][i]) {
+                        choice.target = Math.floor(Math.random * allies.length);
+                    }
                 }
                 enemyChoice.push(choice);
             }
+
+
+
+
+
 
 
 
@@ -540,19 +567,20 @@
             enemyChoice.forEach(function(element, index){
                     let eID = element.target;
                     let amount = moveSwitch(element.move);
+                    console.log(eID);
+                    if (eID !== undefined) {
+                        if (element.targetIsEnemy === true) {
+                            currentHealPointsEnemy[eID] += amount['heal'];
+                        } else {
+                            currentDamagePointsAlly[eID] += amount['dmg'];
+                        }
 
-                    if (element.targetIsEnemy === true) {
-                        currentHealPointsEnemy[eID] += amount['heal'];
-                    } else {
-                        currentDamagePointsAlly[eID] += amount['dmg'];
+
+
+                        calcDamageOnAllies(currentDamagePointsAlly, currentHealPointsEnemy, eID, enemyTemp, allyTemp, element.targetIsEnemy, index, element.move);
                     }
 
 
-                if(eID !== 'null'){
-                    calcDamageOnAllies(currentDamagePointsAlly, currentHealPointsEnemy, eID, enemyTemp, allyTemp, element.targetIsEnemy, index, element.move);
-                } else {
-                    throw "error";
-                }
 
 
             });
@@ -604,7 +632,7 @@
         }
 
     function calcDamageOnEnemies (currentDamagePointsAlly, currentHealPointsEnemy, eID, enemyTemp, allyTemp, targetIsAlly, index, move) {
-
+        console.log(allies[index].dead +' is ' + allies[index].name);
                 if(allies[index].dead === false) {
                     if (targetIsAlly === true) {
                         if (allies[index].name === allies[eID].name) {
@@ -612,24 +640,30 @@
                             console.log(allies[index].name+" uses "+move+" on self");
                             turnInfo1.innerText = allies[index].name+" uses "+move+" on self";
                             battleText.appendChild(turnInfo1);
+                            let elementAllyHP = document.getElementById("allyHP" + eID);
+                            let currentAllyHP = currentState['move'+gameCounter][1][eID].stats.hp;
+                            currentAllyHP += currentHealPointsEnemy[eID];
+                            elementAllyHP.innerText = 'HP: ' + currentAllyHP;
+                            allyTemp[eID].stats.hp = currentAllyHP;
                         } else {
                             let turnInfo2 = document.createElement('div');
                             console.log(allies[index].name+" uses "+move+" on teammate "+allies[eID].name);
                             turnInfo2.innerText = allies[index].name+" uses "+move+" on teammate "+allies[eID].name;
-                            battleText.appendChild(turnInfo2)
+                            battleText.appendChild(turnInfo2);
+                            let elementAllyHP = document.getElementById("allyHP" + eID);
+                            let currentAllyHP = currentState['move'+gameCounter][1][eID].stats.hp;
+                            currentAllyHP += currentHealPointsEnemy[eID];
+                            elementAllyHP.innerText = 'HP: ' + currentAllyHP;
+                            allyTemp[eID].stats.hp = currentAllyHP;
                         }
 
-                        let elementAllyHP = document.getElementById("allyHP" + eID);
-                        let currentAllyHP = currentState['move'+gameCounter][1][eID].stats.hp;
-                        currentAllyHP += currentHealPointsEnemy[eID];
-                        elementAllyHP.innerText = 'HP: ' + currentAllyHP;
-                        allyTemp[eID].stats.hp = currentAllyHP;
+
                     } else {
                         console.log(allies[index].name+" uses "+move+" against "+enemies[eID].name);
                         let elementEnHP = document.getElementById("enemyHP" + eID);
                         let currentHP = currentState['move'+gameCounter][0][eID].stats.hp;
                         currentHP -= currentDamagePointsAlly[eID];
-                        if (currentHP < 0 && enemies[eID].dead === false) {
+                        if (currentHP <= 0 && enemies[eID].dead === false) {
                             currentHP = 0;
                             enemies[eID].dead = true;
                             let eIDPlus = parseInt(eID) + 1;
@@ -644,6 +678,8 @@
                             battleText.appendChild(turnInfo3);
                             enemyTemp[eID].stats.hp = currentHP;
                         } else {
+                            let div4 = document.createElement("div");
+                            div4.innerText =  allies[index].name+" uses "+move+" against "+enemies[eID].name;
                             elementEnHP.innerText = 'HP: ' + currentHP;
                             enemyTemp[eID].stats.hp = currentHP;
                         }
@@ -658,7 +694,7 @@
 
         function calcDamageOnAllies (_currentDamagePointsEnemy, _currentHealPointsAlly, eID, enemyTemp, allyTemp, targetIsEnemy, index, move) {
             //todo problem her with allies should be enemies
-
+            console.log('Death is: ' + enemies[index].dead +' is '+enemies[index].name);
             if(enemies[index].dead === false) {
                 if (targetIsEnemy === true) {
                     if (enemies[index].name === enemies[eID].name){
@@ -678,11 +714,10 @@
                     elementAllyHP.innerText = 'HP: ' + currentAllyHP;
                     enemyTemp[eID].stats.hp = currentAllyHP;
                 } else {
-                    console.log(enemies[index].name+" uses "+move+" against "+allies[eID].name);
                     let elementEnHP = document.getElementById("allyHP" + eID);
                     let currentHP = currentState['move'+gameCounter][0][eID].stats.hp;
                     currentHP -= _currentDamagePointsEnemy[eID];
-                    if (currentHP < 0 && allies[eID].dead === false) {
+                    if (currentHP <= 0 && allies[eID].dead === false) {
                         currentHP = 0;
                         allies[eID].dead = true;
                         console.log(allies[eID].name +" dies");
@@ -701,16 +736,13 @@
                     allyTemp[eID].stats.hp = currentHP;
                 }
             }else {
-                console.log("I dont do a move " + enemies[eID].name)
+                console.log(eID);
+                console.log("I " + enemies[eID].name + " am dead");
             }
 
 
 
         }
-
-        function showMoves() {
-
-        };
 
         function checkPartyStatus () {
             let allyStatus = document.querySelectorAll(".allies");
