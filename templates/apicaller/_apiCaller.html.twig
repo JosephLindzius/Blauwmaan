@@ -64,18 +64,28 @@
    {% endblock %}
 {% block body %}
 
-<div id="container" class="container">
-                    <div class="mx-auto d-flex justify-content-center">
-                        <div class=col-4 id="div1"></div>
-                        <div class="bg-dark p-5 text-center col-4">
-                            {{ form_start(username) }}
-                            {{ form_row(username.Username, {'attr': {'class': 'bg-light', 'placeholder': 'Enter your name here'}})}}
-                            {{ form_row(username.Submit, {'attr': {'class': 'btn bg-light'}})}}
-                            {{ form_end(username) }}
-                        </div>
-                        <div class=col-4 id="div2"></div>
+    <div id="container" class="container">
+            <div class="row">
+                <div class="cover col-12 p-5 comp">
+                    <div id="glass" class="glass row m-2 p-4">
+                        <section class="text-center mx-auto col-6">
+                            <a href="{{ path("homepage") }}">
+                                <h4 class="m-5">Hello {{ name }}, I have a mission for you</h4>
+                            </a>
+                            <img class="img-fluid computerPicture rounded mx-auto d-block" src="{{ api.photo }}" alt="picture of {{ api.photo }}">
+
+                            <ul id="blink" class="bg-dark text-light text-center p-5 card list-unstyled m-5">
+                                <li >{{ api.name }} {{ api.surname }}</li>
+                                <li> {{ api.gender }}</li>
+                                <li> {{ api.age }}</li>
+                                <li> {{ api.region }}</li>
+                            </ul>
+
+                        </section>
                     </div>
-        </div>
+                </div>
+            </div>
+    </div>
     <script>
         let missionAccept = document.getElementById("blink");
         let glass = document.getElementById("glass");

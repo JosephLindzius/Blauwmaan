@@ -22,12 +22,20 @@ class ChatBoxController extends AbstractController
     public function index(Request $request, MessageClient $messageClient)
     {
         $em = $this->getDoctrine()->getManager();
-        $messages = $em->getRepository(MessageEncode::class)->findAll();
 
-        if (count($messages) > 5) {
-            $message = $messages[0];
-            $em->remove($message);
-            $em->flush();
+        try {
+            $messages = $em->getRepository(MessageEncode::class)->findAll();
+
+            if (count($messages) > 5) {
+                $message = $messages[0];
+                $em->remove($message);
+                $em->flush();
+            }
+        } catch (
+             \Exception
+         $exception) {
+            $this->addFlash('error', 'Error connection to database has occurred');
+            $messages = [];
         }
 
 

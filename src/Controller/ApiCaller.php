@@ -9,7 +9,7 @@ use Symfony\Component\HttpClient\CurlHttpClient;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
+use App\Service\APIPersonMaker;
 
 class ApiCaller extends AbstractController
 {
@@ -18,7 +18,7 @@ class ApiCaller extends AbstractController
      * @param Request $request
      * @return Response
      */
-    public function index(Request $request) : Response
+    public function index(Request $request): Response
     {
 
         $username = $this->createFormBuilder()
@@ -26,41 +26,21 @@ class ApiCaller extends AbstractController
             ->add('Submit', SubmitType::class)
             ->getForm();
 
-        if ($request) {
-            $api = $this->apiCaller();
-            $data = $username->handleRequest($request)->getData();
+        $username->handleRequest($request);
+        if ($username->isSubmitted() && $username->isValid()) {
+            $api = new APIPersonMaker();
+            $name = ($username->getData());
+            return $this->render('apicaller/_apiCaller.html.twig', [
+                'name' => $name['Username'],
+                'api' => $api
+            ]);
         }
 
         return $this->render('apicaller/index.html.twig', [
             'username' => $username->createView(),
-            'name' => $data['Username'],
-            'api' => $api
         ]);
     }
-
-
-    private function apiCaller (): array
-    {
-        $client = new CurlHttpClient();
-        try {
-            $response = $client->request('GET', 'https://uinames.com/api/?ext');
-
-            $statusCode = $response->getStatusCode();
-// $statusCode = 200
-            $contentType = $response->getHeaders()['content-type'][0];
-// $contentType = 'application/json'
-            $content = $response->getContent();
-// $content = '{"id":521583, "name":"symfony-docs", ...}'
-            $content = $response->toArray();
-// $content = ['id' => 521583, 'name' => 'symfony-docs', ...]
-        } catch (TransportExceptionInterface $e) {
-            $this->addFlash('error', 'did not work');
-        }
-
-        return $content;
-    }
-
-
 }
+
 
 

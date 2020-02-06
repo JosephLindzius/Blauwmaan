@@ -154,9 +154,11 @@ var APP = {
 
 		}
 
+
 		var time, prevTime;
 
 		function animate() {
+
 
 			time = performance.now();
 
@@ -169,6 +171,8 @@ var APP = {
 				console.error( ( e.message || e ), ( e.stack || "" ) );
 
 			}
+
+
 
 			renderer.render( scene, camera );
 

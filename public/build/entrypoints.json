@@ -1,17 +1,17 @@
 {
   "entrypoints": {
-    "js/app": {
+    "React": {
       "js": [
-        "http://localhost:8080/build/runtime.js",
-        "http://localhost:8080/build/js/app.js"
+        "/build/runtime.js",
+        "/build/React.js"
       ]
     },
     "css/app": {
       "js": [
-        "http://localhost:8080/build/runtime.js"
+        "/build/runtime.js"
       ],
       "css": [
-        "http://localhost:8080/build/css/app.css"
+        "/build/css/app.css"
       ]
     }
   }
